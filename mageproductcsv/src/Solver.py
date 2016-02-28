@@ -7,7 +7,8 @@ _author_ = 'leoshang'
 
 
 class Solver:
-    CSV_OUTPUT_FILE_NAME = "wmf_standmixer.csv"
+    CSV_OUTPUT_FILE_NAME = "wmf_standmixer_complete.csv"
+    CSV_INPUT_FILE_NAME = "/Users/leishang/helenstreet/python/mageproductcsv/resources/wmf-standmixer.csv"
     store='base'
     country_of_manu='Germany'
     featured='No'
@@ -32,8 +33,8 @@ class Solver:
 
     def unicode_read(self):
         # the first row of the csv input file must be the csv head name
-        filename = sys.argv[1]
-        print "file name " + filename
+        # filename = sys.argv[1]
+        # print "file name " + filename
 
         outputfile = file(self.CSV_OUTPUT_FILE_NAME, 'w')
         writer = csv.writer(outputfile)
@@ -41,7 +42,7 @@ class Solver:
         # outputfile = open("test.csv", 'w')
         # outputfile.write(codecs.BOM_UTF8)
 
-        with open(filename, 'rU') as csvfile:
+        with open(self.CSV_INPUT_FILE_NAME, 'rU') as csvfile:
             data_reader = csv.reader(csvfile)
             try:
                 for index, row in enumerate(data_reader):

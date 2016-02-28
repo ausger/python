@@ -20,7 +20,7 @@ class ProductSpider(scrapy.Spider):
     allowed_domains = ["www.amazon.cn", "www.amazon.de"]
 
     # duplo & juniors
-    # export_file_name = "ausger_magmi_duplo.csv"
+    # export_file_name = "magmi_lego_duplo.csv"
     # product_ids = ['10587', '10590', '10594', '10595', '10596', '10600', '10615', '10616', '10617',
     #                '10618', '10674', '10682']
     # product_id_mapping = {'10587': '52,2-5岁,duplo', '10590': '29,2-5岁,duplo', '10594': '38,2-5岁,duplo',
@@ -29,7 +29,7 @@ class ProductSpider(scrapy.Spider):
     #                       '10618': '70,1.5-5岁,duplo', '10674': '306,4-7岁,juniors', '10682': '1000,4岁以上,classic'}
 
     # classic
-    # export_file_name = "ausger_magmi_classic.csv"
+    # export_file_name = "magmi_lego_classic.csv"
     #
     # product_ids = ['10692', '10693', '10694', '10696', '10699', '10700', '10701']
     #
@@ -38,7 +38,7 @@ class ProductSpider(scrapy.Spider):
     #                       '10696': '484,4岁以上,classic', '10699': '1,4岁以上,classic', '10700': '1,4岁以上,classic',
     #                       '10701': '1,4岁以上,classic'}
 
-    # export_file_name = "ausger_magmi_creator.csv"
+    # export_file_name = "magmi_lego_creator.csv"
     # product_ids = ['31003', '31010', '31022', '31023', '31026', '31027', '31028', '31029', '31030',
     #                '31031', '31032', '31033', '31034', '31035', '31036']
     # product_id_mapping = {'31003': '145,6-12岁,creator',
@@ -57,7 +57,7 @@ class ProductSpider(scrapy.Spider):
     #                       '31035': '286,7-12岁,creator',
     #     #                   '31036': '466,7-12岁,creator'}
 
-    # export_file_name = "ausger_magmi_friends.csv"
+    # export_file_name = "magmi_lego_friends.csv"
     # product_ids = ['3933', '3935', '41005', '41015', '41035', '41037', '41038', '41039', '41056',
     #                '41057', '41058', '41059', '41091', '41093', '41094', '41095', '41097']
     # product_id_mapping = {'3933': '81,5-12岁,friends',
@@ -78,7 +78,7 @@ class ProductSpider(scrapy.Spider):
     #                       '41095': '706,6-12岁,friends',
     #                       '41097': '254,6-12岁,friends'}
 
-    # export_file_name = "ausger_magmi_technic_hero_city.csv"
+    # export_file_name = "magmi_lego_technic_hero_city.csv"
     # product_ids = ['42009', '42025', '44003', '44029', '60004', '60047', '60048', '60050', '60055',
     #                '60057', '60060', '60069', '60085', '60086', '60088', '6176']
     # product_id_mapping = {'42009': '2606,11-16岁,technic',
@@ -101,7 +101,7 @@ class ProductSpider(scrapy.Spider):
     # product_ids = ['41097']
     # product_id_mapping = {'41097': '254,6-12岁,friends'}
 
-    # export_file_name = "ausger_magmi_chima_ninja.csv"
+    # export_file_name = "magmi_lego_chima_ninja.csv"
     # product_ids = ['70144', '70145', '70146', '70228', '70745', '70746', '70748', '70749', '70750',
     #                '70753', '70754', '70755', '70756']
     # product_id_mapping = {'70144': '450,8-14岁,chima',
@@ -118,7 +118,7 @@ class ProductSpider(scrapy.Spider):
     #                       '70755': '188,7-14岁,ninjago',
     #                       '70756': '215,7-14岁,ninjago'}
 
-    # export_file_name = "ausger_magmi_bionicle_starwars.csv"
+    # export_file_name = "magmi_lego_bionicle_starwars.csv"
     # product_ids = ['70784', '75038', '75040', '75076', '75077', '75078', '75079', '75080', '75081',
     #                '75085', '75089', '75090']
     # product_id_mapping = {'70784': '685,7-14岁,bionicle',
