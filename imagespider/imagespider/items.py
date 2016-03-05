@@ -13,6 +13,6 @@ class LegoImageItem(scrapy.Item):
     # name = scrapy.Field()
     title = scrapy.Field()
     # image_urls = scrapy.Field()
-    file_urls = scrapy.Field()
+    image_urls = scrapy.Field()
     files = scrapy.Field()
     pass

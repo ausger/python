@@ -36,3 +36,24 @@ class LegoItem(scrapy.Item):
     #weight = scrapy.Field()
     #quantity = scrapy.Field()
     pass
+
+
+class LiwusItem(scrapy.Item):
+    # define the fields for your item here like
+    age = scrapy.Field()
+    attribute_set = scrapy.Field()
+    brand = scrapy.Field()
+    category = scrapy.Field()
+    description = scrapy.Field()
+    img = scrapy.Field()
+    meta_title = scrapy.Field()
+    meta_keywords = scrapy.Field()
+    meta_description = scrapy.Field()
+    name = scrapy.Field()
+    price = scrapy.Field()
+    product_id = scrapy.Field()
+    short_description = scrapy.Field()
+    sku = scrapy.Field()
+    url_key = scrapy.Field()
+
+    pass

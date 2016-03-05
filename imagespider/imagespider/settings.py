@@ -9,13 +9,13 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'imagespider'
+BOT_NAME = 'GOOGLEBOT'
 
 SPIDER_MODULES = ['imagespider.spiders']
 NEWSPIDER_MODULE = 'imagespider.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'imagespider (+http://www.yourdomain.com)'
+USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:44.0) Gecko/20100101 Firefox/44.0"
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 1
@@ -35,10 +35,14 @@ CONCURRENT_REQUESTS = 1
 #TELNETCONSOLE_ENABLED=False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
+DEFAULT_REQUEST_HEADERS = {
+   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+   'Accept-Language': 'en-US,en;q=0.5',
+}
+
+SPIDER_MIDDLEWARES = {
+   'scrapy.spidermiddlewares.referer.RefererMiddleware': True,
+}
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
@@ -64,13 +68,16 @@ CONCURRENT_REQUESTS = 1
 #    'imagespider.pipelines.SomePipeline': 300,
 #}
 
-ITEM_PIPELINES = {
-   'scrapy.contrib.pipeline.images.FilesPipeline': 1,
-}
+# ITEM_PIPELINES = {
+#    'scrapy.pipelines.images.FilesPipeline': 1,
+# }
 
 #ITEM_PIPELINES = {
 #   'imagespider.pipelines.MyImagesPipeline': 1,
 #}
+
+ITEM_PIPELINES = ['imagespider.pipelines.LiwusImagesPipeline']
+
 #
 #IMAGES_THUMBS = {
 #    'small': (150, 150),
@@ -97,3 +104,4 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE='scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FILES_STORE = "/Users/leishang/helenstreet/python/imagespider/downloads"
+IMAGES_STORE = "/Users/leishang/helenstreet/python/imagespider/downloads"

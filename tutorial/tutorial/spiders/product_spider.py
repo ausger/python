@@ -19,6 +19,10 @@ class ProductSpider(scrapy.Spider):
     name = "product"
     allowed_domains = ["www.amazon.cn", "www.amazon.de"]
 
+    export_file_name = "test.csv"
+    product_ids = ['test_id']
+
+
     # duplo & juniors
     # export_file_name = "magmi_lego_duplo.csv"
     # product_ids = ['10587', '10590', '10594', '10595', '10596', '10600', '10615', '10616', '10617',
