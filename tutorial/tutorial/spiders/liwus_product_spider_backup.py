@@ -6,7 +6,6 @@ import re
 
 from tutorial.items import LiwusItem
 # import logging
-import ConfigParser
 from scrapy.http.request import Request
 from scrapy.contrib.spiders import Rule
 
@@ -17,76 +16,42 @@ sys.setdefaultencoding('utf8')
 class LiwusProductSpider(scrapy.Spider):
     # Scrapy is single-threaded, except the interactive shell and some tests, see source.
     # Scrapy does most of it's work synchronously. However, the handling of requests is done asynchronously.
-    name = "liwus-product"
+    name = "liwus-product_backup"
     allowed_domains = ["www.liwus.de"]
-    data_feed_config = ConfigParser.ConfigParser()
-    data_feed_config.read('/Users/leishang/helenstreet/python/tutorial/tutorial/spiders/datafeed-config.ini')
 
-    # it needs to changed according to the product to be crawled.
-    current_section = 'Rimowa'
+    ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/suitcases-and-luggage.html"
+    category = "[Chinese Category]/休闲旅游/箱包"
+    export_file_name = "magmi_rimowa.csv"
+    image_folder_prefix = "/rimowa/"
+    brand_name = 'RIMOWA'
+    attribute_set= 'Luggage'
+    product_short_description= "RIMOWA高级旅行箱品牌是德国为数不多的旅行箱生产商之一，也是行业内仅有的承袭百年传统的生产商之一。产品采用了以坚固、耐用、轻巧著称的铝镁合金及高科技聚碳酸酯两种材料制作而成，集优质素材、卓越科技、独特设计及超凡手艺于一身，成为“德国制造”的又一传奇。"
+    product_description_images= "<img width='100%' src='https://img.alicdn.com/imgextra/i3/2037026074/TB2xVsxfXXXXXb4XpXXXXXXXXXX_!!2037026074.jpg'/><img width='100%' src='https://img.alicdn.com/imgextra/i1/2037026074/TB2kIMGfXXXXXbEXpXXXXXXXXXX_!!2037026074.jpg'/>"
+    start_urls = [ZH_PRODUCT_LISTING_LINK]
 
-    @staticmethod
-    def config_section_map(section):
-        dict1 = {}
-        options = LiwusProductSpider.data_feed_config.options(section)
-        for option in options:
-            try:
-                dict1[option] = LiwusProductSpider.data_feed_config.get(section, option)
-                if dict1[option] == -1:
-                    print("skip: %s" % option)
-            except:
-                print("exception on %s!" % option)
-                dict1[option] = None
-        print dict1
-        return dict1
+    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/alfi/isolierkanne.html?___store=en&dir=asc&limit=50&order=name"
+    #category = "[Chinese Category]/休闲旅游/保温壶"
+    #export_file_name = "magmi_alfi.csv"
+    #image_folder_prefix = "/alfi/Isolierkanne/"
+    #brand_name = 'ALFI'
+    #attribute_set= 'Alfi Drinkbottle'
+    #product_short_description= "百年来每一只ALFI的产品都是拥有市场上的高品质的保证,资深熟练的工程设计师针对每道工序反复检验,确保产品100%符合保准,加上独特的抽真空双层玻璃内胆设计,经过1400摄氏度煅烧而成,保温保冷效力可以长时间维持. 采用高品质的材料及无毒可回收的环保材料是ALFI对消费者及环境的承诺."
+    #product_description_images= "<img width='100%' src='https://img.alicdn.com/imgextra/i3/2663345110/TB2aqV_kXXXXXcBXpXXXXXXXXXX_!!2663345110.jpg'><img width='100%' src='https://img.alicdn.com/imgextra/i2/2663345110/TB2AmKMkXXXXXbwXXXXXXXXXXXX_!!2663345110.jpg'>"
+    #start_urls = [ZH_PRODUCT_LISTING_LINK]
 
-    def __init__(self, *a, **kw):
-        print "***************** here ********************"
-        print LiwusProductSpider.data_feed_config.sections()
-        super(LiwusProductSpider, self).__init__(*a, **kw)
-        self.category = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['category']
-        self.export_file_name = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['export_file_name']
-        self.image_folder_prefix = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['image_folder_prefix']
-        self.brand_name = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['brand_name']
-        self.attribute_set = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['attribute_set']
-        self.product_short_description = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['product_short_description']
-        self.product_description_images = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['product_description_images']
-        tmp = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['start_urls']
-        self.start_urls = tmp.split(",")
-        print self.start_urls
-        product_csv_file = open(self.export_file_name, 'wt')
-        LiwusProductSpider.writer = csv.writer(product_csv_file)
+    # 中文Zwilling美妆工具 https://list.tmall.com/search_shopitem.htm?user_id=2115745306&cat=2&spm=a1z10.5-b.a2227oh.d100&oq=zwilling%C3%C0%D7%B1%B9%A4%BE%DF%C6%EC%BD%A2%B5%EA&suggest=0_4&ds=1&stype=search
+    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?SID=kv6bt8uq0bi32oi7a2c94m0th3&dir=desc&order=name"
+    #ZH_PRODUCT_LISTING_LINK_2 = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?SID=kv6bt8uq0bi32oi7a2c94m0th3&dir=desc&order=name&p=2"
+    #ZH_PRODUCT_LISTING_LINK_3 = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?SID=kv6bt8uq0bi32oi7a2c94m0th3&dir=desc&order=name&p=3"
+    #category = "[Chinese Category]/美妆护肤/美妆工具"
+    #export_file_name = "magmi_zwilling_manicure.csv"
+    #image_folder_prefix = "/zwilling/beauty/"
+    #brand_name = 'Zwilling'
+    #attribute_set= 'Manicure'
+    #product_short_description= "双立人品牌是Peter·Henckels（彼得·亨克斯先生）以双子座作为最初的构想，在德国美丽的莱茵河畔小镇索林根创立的品牌。同时也揭开了这一人类现存最古老商标之一不老传说的序幕。他的后代约翰·阿布雷汉姆·亨克斯将公司名称改成Zwilling J.A.Henckel.US。 双立人拥有超过2000种的不锈钢刀剪餐具、锅具、厨房炊具和个人护理用品，开创了摩登厨房理念，让烹饪成为一种享受，带给人们看得见的完美品质和生活情趣。"
+    #product_description_images= "<img width='100%' src='https://gdp.alicdn.com/imgextra/i4/2115745306/TB2H15OeVXXXXcOXXXXXXXXXXXX_!!2115745306.jpg'>"
+    #start_urls = [ZH_PRODUCT_LISTING_LINK,ZH_PRODUCT_LISTING_LINK_2,ZH_PRODUCT_LISTING_LINK_3]
 
-
-    #start_urls = ["http://www.liwus.de/suitcases-and-luggage.html"]
-
-    BESTECK_PATTERN = "(.)*besteck(.)*"
-    KITCHEN_HELPER_PATTERN = "(.)*(backpinsel|offner|knoblauchpresse|kuchenhelfer|messerscharfer|watzstahl|lo(e)*ffel|scheebesen)(.)*"
-    KITCHEN_HELPER_PATTERN_2 = "(.)*(pinzette-abgewinkelt-mattiert|schal|teigschaber|wender|topfuntersetzer)(.)*"
-    KITCHEN_HELPER_PATTERN_3 = "(.)*(reparaturstein|pizza-steakm-set|schleifhilfe|schubladeneinsatz|wetzstahl|bbq-set)(.)*"
-    KITCHEN_ORGANIZER_PATTERN = "(.)*tool-box-bambus(.)*"
-    KITCHEN_BLATTER_PATTERN = "(.)*(brett|platillo-magnetis)(.)*"
-    KITCHEN_PAN_PATTERN = "(.)*(pfanne-|topf-|dampfeinsatz|raucherset-|wok-)(.)*"
-    KITCHEN_PAN_SET_PATTERN = '(.)*(koch(.)*set-|touristen-set-13tlg--zwilling)(.)*'
-    KITCHEN_KNIFE_PATTERN = '(.)*(messer-|classic-ikon-2tlg|kitchensurfer|santoku)(.)*'
-    KITCHEN_KNIFE_SET_PATTERN = '(.)*(block|style-2tlg--zwilling_32433-001-0|messersatz|gourmet-2tlg|knife-set|messerset|yanagiba-geschenkset)(.)*'
-    KITCHEN_SCISSOR_PATTERN = '(.)*schere(.)*'
-    KITCHEN_COOK_POT = '(.)*kessel(.)*'
-    MANICURE = '(.)*nagelpflegeetui(.)*'
-
-    product_category = {BESTECK_PATTERN : '[Chinese Category]/厨房用具/餐具器皿',
-                        KITCHEN_HELPER_PATTERN: '[Chinese Category]/厨房用具/厨房小工具',
-                        KITCHEN_HELPER_PATTERN_2: '[Chinese Category]/厨房用具/厨房小工具',
-                        KITCHEN_HELPER_PATTERN_3: '[Chinese Category]/厨房用具/厨房小工具',
-                        KITCHEN_ORGANIZER_PATTERN: '[Chinese Category]/厨房用具/厨房收纳',
-                        KITCHEN_BLATTER_PATTERN:'[Chinese Category]/厨房用具/砧板',
-                        KITCHEN_PAN_PATTERN:'[Chinese Category]/厨房用具/德国锅具',
-                        KITCHEN_PAN_SET_PATTERN:'[Chinese Category]/厨房用具/德国锅具/德国锅具套装',
-                        KITCHEN_KNIFE_PATTERN:'[Chinese Category]/厨房用具/德国刀具',
-                        KITCHEN_KNIFE_SET_PATTERN:'[Chinese Category]/厨房用具/德国刀具/德国刀具套装',
-                        KITCHEN_SCISSOR_PATTERN:'[Chinese Category]/厨房用具/厨房专用剪刀',
-                        KITCHEN_COOK_POT:'[Chinese Category]/厨房用具/杯壺烘焙',
-                        MANICURE:'[Chinese Category]/美妆护肤/美妆工具'}
 
     STORE= 'base'
     AGE= ''
@@ -122,6 +87,8 @@ class LiwusProductSpider(scrapy.Spider):
     outputted_products = []
     failed_products = []
 
+    product_csv_file = open(export_file_name, 'wt')
+    writer = csv.writer(product_csv_file)
 
     ZH_PRODUCT_DETAILS_LINK = "//div[@class='category-products']/descendant::" \
                               "ul[contains(@class,'products-grid')]/descendant::a[@class='product-image']/@href"
@@ -173,7 +140,6 @@ class LiwusProductSpider(scrapy.Spider):
 
         if len(product_images) > 0 and len(product_images[0].strip()) > 0:
             self.image_title = self.generate_image_name(product_title, product_images)
-            self.category = self.get_category_name(self.image_title)
 
         liwus_item = LiwusItem()
 
@@ -279,23 +245,6 @@ class LiwusProductSpider(scrapy.Spider):
         image_title = image_title.lower()
         return image_title
 
-    def get_category_name(self, product_image_name):
-        matched = 0
-        for key, value in self.product_category.iteritems():
-            result = re.match(key, product_image_name)
-            if result is None:
-                continue
-            matched += 1
-            print product_image_name + " matches " + key + " and it's category is: " + value
-            return value
-        if matched == 0:
-            print "[no matches!]:" + product_image_name + " no matches!"
-            return self.category
-        # elif matched > 1:
-        #     print "***" + product_image_name + " is matched %d times.***" % matched
-        # else:
-        #     print product_image_name + " is matched only once. OK"
-
     def write_to_product_csv(self, item):
 
         a_row = item['name'] + "," + item['description'] +\
@@ -366,5 +315,3 @@ class LiwusProductSpider(scrapy.Spider):
             #if len(self.failed_products) + len(self.outputted_products) == self.item_count:
             #    print "failed product: " + ','.join(self.failed_products)
                 # self.product_csv_file.close()
-
-
