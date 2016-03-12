@@ -48,6 +48,7 @@ class LiwusImageSpider(scrapy.Spider):
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/le-creuset/gusseisen-signature.html?___store=en&dir=asc&limit=24&manufacturer=12&order=name&p=2"
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/le-creuset/gusseisen-signature.html?___store=en&dir=asc&limit=24&manufacturer=12&order=name&p=3"
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/le-creuset/backen.html?___store=en&dir=asc&limit=100&order=price"
+
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/victorinox/taschenmesser.html?___store=en&dir=asc&limit=24&order=name"
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/victorinox/taschenmesser.html?___store=en&dir=asc&limit=24&order=name&p=2"
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/victorinox/taschenmesser.html?___store=en&dir=asc&limit=24&order=name&p=3"

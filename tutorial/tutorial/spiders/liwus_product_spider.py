@@ -23,7 +23,7 @@ class LiwusProductSpider(scrapy.Spider):
     data_feed_config.read('/Users/leishang/helenstreet/python/tutorial/tutorial/spiders/datafeed-config.ini')
 
     # it needs to changed according to the product to be crawled.
-    current_section = 'Rimowa'
+    current_section = 'zielonka_auto_geruchskiller'
 
     @staticmethod
     def config_section_map(section):
@@ -60,19 +60,23 @@ class LiwusProductSpider(scrapy.Spider):
 
     #start_urls = ["http://www.liwus.de/suitcases-and-luggage.html"]
 
-    BESTECK_PATTERN = "(.)*besteck(.)*"
-    KITCHEN_HELPER_PATTERN = "(.)*(backpinsel|offner|knoblauchpresse|kuchenhelfer|messerscharfer|watzstahl|lo(e)*ffel|scheebesen)(.)*"
-    KITCHEN_HELPER_PATTERN_2 = "(.)*(pinzette-abgewinkelt-mattiert|schal|teigschaber|wender|topfuntersetzer)(.)*"
-    KITCHEN_HELPER_PATTERN_3 = "(.)*(reparaturstein|pizza-steakm-set|schleifhilfe|schubladeneinsatz|wetzstahl|bbq-set)(.)*"
-    KITCHEN_ORGANIZER_PATTERN = "(.)*tool-box-bambus(.)*"
+    BESTECK_PATTERN = "(.)*(besteck|eierbecher)(.)*"
+    KITCHEN_HELPER_PATTERN = "(.)*(backpinsel|offner|knoblauchpresse|kuchenhelfer|messerscharfer|watzstahl|lo(e)*ffel|besen|schaufel|teigverteiler|dunsteinsatz)(.)*"
+    KITCHEN_HELPER_PATTERN_2 = "(.)*(pinzette-abgewinkelt-mattiert|schaler|teigschaber|wender|topfuntersetzer|multitool-clever|zange|pflegemittel)(.)*"
+    KITCHEN_HELPER_PATTERN_3 = "(.)*(reparaturstein|pizza-steakm-set|schleifhilfe|schubladeneinsatz|wetzstahl|bbq-set|schneider|ausstecher|bruhsieb|thermometer" \
+                               "|eierkocher|gelocht|einsatzsteg|eisportionierer|entschupper|hammer|heber|reibe|kartoffelstampfer|knacker|ruhrblitz|" \
+                               "salat-set|salat-dressing|streuer|schleifstein|universalformer|muhle)(.)*"
+    KITCHEN_ORGANIZER_PATTERN = "(.)*(tool-box-bambus|dose)(.)*"
     KITCHEN_BLATTER_PATTERN = "(.)*(brett|platillo-magnetis)(.)*"
-    KITCHEN_PAN_PATTERN = "(.)*(pfanne-|topf-|dampfeinsatz|raucherset-|wok-)(.)*"
-    KITCHEN_PAN_SET_PATTERN = '(.)*(koch(.)*set-|touristen-set-13tlg--zwilling)(.)*'
+    KITCHEN_PAN_PATTERN = "(.)*(pfanne-|topf-|dampf|raucherset-|wok-|sicomatic|stielkasserolle|vitalis|cocotte)(.)*"
+    KITCHEN_PAN_SET_PATTERN = '(.)*((pfannen|koch|topf|asia|kochgeschirr|cocotte)(.)*set-|touristen-set-13tlg--zwilling)(.)*'
     KITCHEN_KNIFE_PATTERN = '(.)*(messer-|classic-ikon-2tlg|kitchensurfer|santoku)(.)*'
     KITCHEN_KNIFE_SET_PATTERN = '(.)*(block|style-2tlg--zwilling_32433-001-0|messersatz|gourmet-2tlg|knife-set|messerset|yanagiba-geschenkset)(.)*'
     KITCHEN_SCISSOR_PATTERN = '(.)*schere(.)*'
-    KITCHEN_COOK_POT = '(.)*kessel(.)*'
-    MANICURE = '(.)*nagelpflegeetui(.)*'
+    KITCHEN_COOK_POT = '(.)*(kessel|glas|karaffe|tasse|becher|auflaufform|kanne|schussel|schale|teller)(.)*'
+    MANICURE = '(.)*((nagelpflege|gurtel|leder)etui|gurteltasche|nagelknipser)(.)*'
+    BAR_WEIN = '(.)*(bar|loft|shaker|flachmann|korkenzieher|clip-weinthermometer|topfring|flaschenverschlus|weinpumpe)(.)*'
+    KAFFE = '(.)*(latte-macchiato)(.)*'
 
     product_category = {BESTECK_PATTERN : '[Chinese Category]/厨房用具/餐具器皿',
                         KITCHEN_HELPER_PATTERN: '[Chinese Category]/厨房用具/厨房小工具',
@@ -80,13 +84,15 @@ class LiwusProductSpider(scrapy.Spider):
                         KITCHEN_HELPER_PATTERN_3: '[Chinese Category]/厨房用具/厨房小工具',
                         KITCHEN_ORGANIZER_PATTERN: '[Chinese Category]/厨房用具/厨房收纳',
                         KITCHEN_BLATTER_PATTERN:'[Chinese Category]/厨房用具/砧板',
-                        KITCHEN_PAN_PATTERN:'[Chinese Category]/厨房用具/德国锅具',
                         KITCHEN_PAN_SET_PATTERN:'[Chinese Category]/厨房用具/德国锅具/德国锅具套装',
-                        KITCHEN_KNIFE_PATTERN:'[Chinese Category]/厨房用具/德国刀具',
+                        KITCHEN_PAN_PATTERN:'[Chinese Category]/厨房用具/德国锅具',
                         KITCHEN_KNIFE_SET_PATTERN:'[Chinese Category]/厨房用具/德国刀具/德国刀具套装',
+                        KITCHEN_KNIFE_PATTERN:'[Chinese Category]/厨房用具/德国刀具',
                         KITCHEN_SCISSOR_PATTERN:'[Chinese Category]/厨房用具/厨房专用剪刀',
                         KITCHEN_COOK_POT:'[Chinese Category]/厨房用具/杯壺烘焙',
-                        MANICURE:'[Chinese Category]/美妆护肤/美妆工具'}
+                        MANICURE:'[Chinese Category]/美妆护肤/美妆工具',
+                        BAR_WEIN:'[Chinese Category]/厨房用具/红酒器皿',
+                        KAFFE:'[Chinese Category]/厨房用具/咖啡器皿'}
 
     STORE= 'base'
     AGE= ''
@@ -211,12 +217,12 @@ class LiwusProductSpider(scrapy.Spider):
 
         liwus_item['url_key'] = self.url_key
 
-        if len(add_tocartbutton_holder) > 0 and add_tocartbutton_holder[0] == 'Add to Cart':
+        #if len(add_tocartbutton_holder) > 0 and add_tocartbutton_holder[0] == 'Add to Cart':
             # output this product!
-            self.write_to_product_csv(liwus_item)
-        else:
-            print "%s is only for pre order, no output"
-            self.failed_products.append(item_index)
+        self.write_to_product_csv(liwus_item)
+        #else:
+        #    print "%s is only for pre order, no output"
+        #    self.failed_products.append(item_index)
 
     def get_price(self, liwus_item, prod_price_holder):
         tmp = prod_price_holder[0]
@@ -280,6 +286,7 @@ class LiwusProductSpider(scrapy.Spider):
         return image_title
 
     def get_category_name(self, product_image_name):
+        return self.category
         matched = 0
         for key, value in self.product_category.iteritems():
             result = re.match(key, product_image_name)
