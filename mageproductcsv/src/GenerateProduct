@@ -9,12 +9,14 @@ _author_ = 'leoshang'
 
 class GenerateProduct:
 
-    XLS_INPUT_FILE_NAME = "/Users/leishang/helenstreet/python/mageproductcsv/resources/carseat.xlsx"
-    XLS_SHEET_NAME = "sheet1"
-    CSV_OUTPUT_FILE_NAME = "carseat_complete.csv"
+    XLS_INPUT_FILE_NAME = "/Users/leishang/helenstreet/python/mageproductcsv/resources/wmf-milk-foam.xlsx"
+    XLS_SHEET_NAME = "Sheet1"
+    CSV_OUTPUT_FILE_NAME = "/Users/leishang/helenstreet/python/mageproductcsv/output/wmf-milk-foam_complete.csv"
     store='base'
-    age="9个月-12岁"
-    brand = "Cybex"
+    age=''
+    brand = "WMF"
+    attribute_set='Electric'
+    categories='[Chinese Category]/家用小电器/奶泡机'
     country_of_manu='Germany'
     featured='No'
     UTF_8_ENCODING='utf-8'
@@ -71,30 +73,35 @@ class GenerateProduct:
             # check out the last row
             for index, cell in enumerate(row):
                 if cell.value is not None:
-                    a.append(u''.join(cell.value).encode('utf-8').strip())
-                    # //description | img | name-de | name-zh | sku | meta-title | meta-keywords | meta-description | short-description
-
-            writer.writerow((a[4], self.store, 'Carseat', self.product_type, '3,5,91', self.product_websites, "9个月-12岁",'','',
-                row[14],'','','','',self.country_of_manu,'','',
-                '','','',row[2],self.featured,'',
-                '','0',row[10],self.image_label,'','',self.media_gallery,
-                row[8],row[7],row[6],'','',self.USE_CONFIG,
-                self.USE_CONFIG,row[4],'','',self.PRODUCT_INFO_COLUMN,'',row[3],
-                '0',row[9],'',self.size,row[11],self.small_image_label,'',
-                self.special_price,'',self.STATUS,self.TAX_CLASS_ID,row[12],self.thumbnail_label,'',row[5],
-                row[5]+'.html',self.visibility,self.weight,self.quantity,'0','1','0','0',
-                '1','1','1','0','1',
-                self.is_in_stock,'','1','0','1',
-                '0','1','0','1',
-                '0','0','','','',
-                '','','','',
-                '','','','','',
-                '','','','','',
-                self.media_image,'','1','0'))
+                    print index
+                    if isinstance(cell.value, float):
+                        print cell.value
+                        a.append(cell.value)
+                    else:
+                        print u''.join(cell.value).encode('utf-8').strip()
+                        a.append(u''.join(cell.value).encode('utf-8').strip())
+                    #   0           1         2       3         4            5                 6                  7                 8        9    10     11   12
+                    #category	description	price	name	meta_title	meta_keywords	meta_description	short_description	img-cover	img	brand	sku	url-key
+            description_tmp = a[1] + a[9]
+            writer.writerow((a[11], self.store, self.attribute_set, self.product_type, self.categories, self.product_websites, self.age,'','',
+                        a[10],'','','','',self.country_of_manu,'','',
+                        '','','',description_tmp,self.featured,'',
+                        '','0',a[8],self.image_label,'','',self.media_gallery,
+                        a[6],a[5],a[4],'','',self.USE_CONFIG,
+                        self.USE_CONFIG,a[3],'','',self.PRODUCT_INFO_COLUMN,'',a[2],
+                        '0',a[7],'',self.size,a[8],self.small_image_label,'',
+                        self.special_price,'',self.STATUS,self.TAX_CLASS_ID,a[8],self.thumbnail_label,'',a[12],
+                        a[12]+'.html',self.visibility,self.weight,self.quantity,'0','1','0','0',
+                        '1','1','1','0','1',
+                        self.is_in_stock,'','1','0','1',
+                        '0','1','0','1',
+                        '0','0','','','',
+                        '','','','',
+                        '','','','','',
+                        '','','','','',
+                        self.media_image,'','1','0'))
 
         #              #  0      1         2        3     4     5        6           7              8                  9          10    11        12      13  14       15
         #              # sku,category,description,price,name,url_key,meta_title,meta_keywords,meta_description,short_description,img,small_img,thumbnail,age,brand,attribute_set
-        # writer.writerow(row[0], row[1], row[2], row[3], row[4], row[5],
-                  #              row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15])
 
 GenerateProduct().generate()

@@ -11,7 +11,7 @@ _author_ = 'leoshang'
 
 class PostProductFromXSLX:
 
-    XLS_INPUT_FILE_NAME = "/Users/leishang/helenstreet/python/http_post/resources/carseat.xlsx"
+    XLS_INPUT_FILE_NAME = "/Users/leishang/helenstreet/python/http_post/resources/carseat_mutsy.xlsx"
     XLS_SHEET_NAME = "Sheet1"
     store='base'
     country_of_manu='Germany'
@@ -93,8 +93,8 @@ class PostProductFromXSLX:
 
             if is_empty_row == 0:
                 test = '|'.join(u''.join(x).encode('utf-8').strip() for x in a)
-                #print test
-                #print '--------------------------------------------------------'
+                print test
+                print '--------------------------------------------------------'
             else:
                 print '********empty************'
                 continue
