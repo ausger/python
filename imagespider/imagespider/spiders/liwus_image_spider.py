@@ -19,11 +19,11 @@ class LiwusImageSpider(scrapy.Spider):
 
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/suitcases-and-luggage.html"
 
-    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/alfi/isolierkanne.html?___store=en&dir=asc&limit=50&order=name"
+    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/alfi/isolierkanne.html?___store=cn&dir=asc&limit=50&order=name"
 
-    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?SID=kv6bt8uq0bi32oi7a2c94m0th3&dir=desc&order=name"
-    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?SID=kv6bt8uq0bi32oi7a2c94m0th3&dir=desc&order=name&p=2"
-    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?SID=kv6bt8uq0bi32oi7a2c94m0th3&dir=desc&order=name&p=3"
+    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?___store=cn&dir=desc&order=name"
+    #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?___store=cn&dir=desc&order=name&p=2"
+    ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-beauty.html?___store=cn&dir=desc&order=name&p=3"
 
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-kuchen.html?SID=kv6bt8uq0bi32oi7a2c94m0th3&dir=asc&order=name"
     #ZH_PRODUCT_LISTING_LINK = "http://www.liwus.de/haushaltswaren/zwilling/zwilling-kuchen.html?SID=kv6bt8uq0bi32oi7a2c94m0th3&dir=asc&order=name&p=2"
@@ -200,10 +200,11 @@ class LiwusImageSpider(scrapy.Spider):
         image_name = prod_image_tmp[-1]
 
         # remove the suffix, we need only the name without the suffix .jpg
-        image_name_tmp = image_name.split(".")
-        image_name = image_name_tmp[0]
+        ##image_name_tmp = image_name.split(".")
+        ##image_name = image_name_tmp[0]
 
         # image name is equal to <product title>-<image name>
-        image_title = image_title + '-' + image_name
-        image_title = image_title.lower()
-        return image_title
+        #image_title = image_title + '-' + image_name
+        #image_title = image_title.lower()
+        #return image_title
+        return image_name.lower()

@@ -41,32 +41,50 @@ class Test:
     #             'schleifhilfe-"slider"-wuesthof_4349','schneidbrett-300-x-400-x-50-mm-wuesthof_7288','schubladeneinsatz-fur-7-teile-wuesthof_7273','spickmesser-01_1360',
     #             'universalmesser-grun-wuesthof_3003g','wetzstahl-01_1369','yanagiba-geschenkset-wuesthof_9753']
 
-    test_data = ['dara-wasserfilter-kartuschen-set3-01_1881','2er-set-wasserglas-0-25l-wmf_0950502040--1','bar-set-loft-bar-wmf_0686926030',
-                 'boston-shaker-2tlg-loft-wmf_0613556030--1','champagnerkuhler-stratic-wmf_0636706040-1','clip-weinthermometer-clever-&-more-wmf_0658516030--2',
-                 'eiszange-loft-bar-wmf_0600136030','latte-macchiato-longdrinkloffel-set-6-type-wmf_1289656046','kapselheber-loft-bar-14cm-01_2022',
-                 'flachmann-manhatten-20cl-wmf_0603519990--2','multitool-clever-and-more-wmf_0640636030--3','schraubdeckelzange-profi-plus-wmf_1873556030--2',
-                 'topfring-vino-wmf_0658247920--1','weinflaschenverschluss-clever-&-more-wmf_0640956030','weinpumpe-mit-2-verschlussen-vino-wmf_0640717920']
+    #test_data = ['dara-wasserfilter-kartuschen-set3-01_1881','2er-set-wasserglas-0-25l-wmf_0950502040--1','bar-set-loft-bar-wmf_0686926030',
+    #             'boston-shaker-2tlg-loft-wmf_0613556030--1','champagnerkuhler-stratic-wmf_0636706040-1','clip-weinthermometer-clever-&-more-wmf_0658516030--2',
+    #             'eiszange-loft-bar-wmf_0600136030','latte-macchiato-longdrinkloffel-set-6-type-wmf_1289656046','kapselheber-loft-bar-14cm-01_2022',
+    #             'flachmann-manhatten-20cl-wmf_0603519990--2','multitool-clever-and-more-wmf_0640636030--3','schraubdeckelzange-profi-plus-wmf_1873556030--2',
+    #             'topfring-vino-wmf_0658247920--1','weinflaschenverschluss-clever-&-more-wmf_0640956030','weinpumpe-mit-2-verschlussen-vino-wmf_0640717920']
+
+    test_data = ['德国 WMF 汤勺 BLACK LINE']
 
     def __init__(self):
         self.test_config = ConfigParser.ConfigParser()
         self.test_config.read("/Users/leishang/helenstreet/python/mageproductcsv/resources/data-config.ini")
         print self.test_config.sections()
         # key must be here little case!!!
-        self.BESTECK_PATTERN = self.config_section_map('ImageNamePattern')['BESTECK_PATTERN'.lower()]
-        self.KITCHEN_HELPER_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_HELPER_PATTERN'.lower()]
-        self.KITCHEN_HELPER_PATTERN_2 = self.config_section_map('ImageNamePattern')['KITCHEN_HELPER_PATTERN_2'.lower()]
-        self.KITCHEN_HELPER_PATTERN_3 = self.config_section_map('ImageNamePattern')['KITCHEN_HELPER_PATTERN_3'.lower()]
-        self.KITCHEN_ORGANIZER_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_ORGANIZER_PATTERN'.lower()]
-        self.KITCHEN_BLATTER_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_BLATTER_PATTERN'.lower()]
-        self.KITCHEN_PAN_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_PAN_PATTERN'.lower()]
-        self.KITCHEN_PAN_SET_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_PAN_SET_PATTERN'.lower()]
-        self.KITCHEN_KNIFE_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_KNIFE_PATTERN'.lower()]
-        self.KITCHEN_KNIFE_SET_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_KNIFE_SET_PATTERN'.lower()]
-        self.KITCHEN_SCISSOR_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_SCISSOR_PATTERN'.lower()]
-        self.KITCHEN_COOK_POT = self.config_section_map('ImageNamePattern')['KITCHEN_COOK_POT'.lower()]
-        self.MANICURE = self.config_section_map('ImageNamePattern')['MANICURE'.lower()]
-        self.BAR_WEIN = self.config_section_map('ImageNamePattern')['BAR_WEIN'.lower()]
-        self.KAFFE = self.config_section_map('ImageNamePattern')['KAFFE'.lower()]
+        #self.BESTECK_PATTERN = self.config_section_map('ImageNamePattern')['BESTECK_PATTERN'.lower()]
+        #self.KITCHEN_HELPER_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_HELPER_PATTERN'.lower()]
+        #self.KITCHEN_HELPER_PATTERN_2 = self.config_section_map('ImageNamePattern')['KITCHEN_HELPER_PATTERN_2'.lower()]
+        #self.KITCHEN_HELPER_PATTERN_3 = self.config_section_map('ImageNamePattern')['KITCHEN_HELPER_PATTERN_3'.lower()]
+        #self.KITCHEN_ORGANIZER_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_ORGANIZER_PATTERN'.lower()]
+        #self.KITCHEN_BLATTER_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_BLATTER_PATTERN'.lower()]
+        #self.KITCHEN_PAN_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_PAN_PATTERN'.lower()]
+        #self.KITCHEN_PAN_SET_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_PAN_SET_PATTERN'.lower()]
+        #self.KITCHEN_KNIFE_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_KNIFE_PATTERN'.lower()]
+        #self.KITCHEN_KNIFE_SET_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_KNIFE_SET_PATTERN'.lower()]
+        #self.KITCHEN_SCISSOR_PATTERN = self.config_section_map('ImageNamePattern')['KITCHEN_SCISSOR_PATTERN'.lower()]
+        #self.KITCHEN_COOK_POT = self.config_section_map('ImageNamePattern')['KITCHEN_COOK_POT'.lower()]
+        #self.MANICURE = self.config_section_map('ImageNamePattern')['MANICURE'.lower()]
+        #self.BAR_WEIN = self.config_section_map('ImageNamePattern')['BAR_WEIN'.lower()]
+        #self.KAFFE = self.config_section_map('ImageNamePattern')['KAFFE'.lower()]
+
+        self.BESTECK_PATTERN = self.config_section_map('ZhPattern')['BESTECK_PATTERN'.lower()]
+        self.KITCHEN_HELPER_PATTERN = self.config_section_map('ZhPattern')['KITCHEN_HELPER_PATTERN'.lower()]
+        self.KITCHEN_ORGANIZER_PATTERN = self.config_section_map('ZhPattern')['KITCHEN_ORGANIZER_PATTERN'.lower()]
+        self.KITCHEN_BLATTER_PATTERN = self.config_section_map('ZhPattern')['KITCHEN_BLATTER_PATTERN'.lower()]
+        self.KITCHEN_PAN_PATTERN = self.config_section_map('ZhPattern')['KITCHEN_PAN_PATTERN'.lower()]
+        self.KITCHEN_PAN_SET_PATTERN = self.config_section_map('ZhPattern')['KITCHEN_PAN_SET_PATTERN'.lower()]
+        self.KITCHEN_KNIFE_PATTERN = self.config_section_map('ZhPattern')['KITCHEN_KNIFE_PATTERN'.lower()]
+        self.KITCHEN_KNIFE_SET_PATTERN = self.config_section_map('ZhPattern')['KITCHEN_KNIFE_SET_PATTERN'.lower()]
+        self.KITCHEN_SCISSOR_PATTERN = self.config_section_map('ZhPattern')['KITCHEN_SCISSOR_PATTERN'.lower()]
+        self.KITCHEN_COOK_POT = self.config_section_map('ZhPattern')['KITCHEN_COOK_POT'.lower()]
+        self.MANICURE = self.config_section_map('ZhPattern')['MANICURE'.lower()]
+        self.BAR_WEIN = self.config_section_map('ZhPattern')['BAR_WEIN'.lower()]
+        self.KAFFE = self.config_section_map('ZhPattern')['KAFFE'.lower()]
+        self.SWISS = self.config_section_map('ZhPattern')['SWISS'.lower()]
+        self.TABLE_WARE = self.config_section_map('ZhPattern')['TABLE_WARE'.lower()]
 
         self.product_category = {self.BESTECK_PATTERN : '[Chinese Category]/厨房用具/餐具器皿',
                                  self.KITCHEN_HELPER_PATTERN: '[Chinese Category]/厨房用具/厨房小工具',
@@ -82,7 +100,9 @@ class Test:
                                  self.KITCHEN_COOK_POT:'[Chinese Category]/厨房用具/杯壺烘焙',
                                  self.MANICURE:'[Chinese Category]/美妆护肤/美妆工具',
                                  self.BAR_WEIN:'[Chinese Category]/厨房用具/红酒器皿',
-                                 self.KAFFE:'[Chinese Category]/厨房用具/咖啡器皿'}
+                                 self.KAFFE:'[Chinese Category]/厨房用具/咖啡器皿',
+                                 self.SWISS:'[Chinese Category]/休闲旅游/瑞士军刀',
+                                 self.TABLE_WARE: '[Chinese Category]/厨房用具/餐桌用具'}
 
     def config_section_map(self, section):
         dict1 = {}
@@ -101,7 +121,10 @@ class Test:
         for bt in self.test_data:
             matched = 0
             for key, value in self.product_category.iteritems():
-                result = re.match(key, bt)
+                if key is None:
+                    continue
+                print '[word]=%s; [key]=%s ' % (bt, key)
+                result = re.match(key.decode('utf8'), bt.decode('utf8'))
                 if result is None:
                     continue
                 matched += 1

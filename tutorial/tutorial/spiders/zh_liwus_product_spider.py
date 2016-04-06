@@ -14,24 +14,26 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-class LiwusProductSpider(scrapy.Spider):
+class ZhLiwusProductSpider(scrapy.Spider):
     # Scrapy is single-threaded, except the interactive shell and some tests, see source.
     # Scrapy does most of it's work synchronously. However, the handling of requests is done asynchronously.
-    name = "liwus-product"
+    name = "zh-liwus-product"
     allowed_domains = ["www.liwus.de"]
     data_feed_config = ConfigParser.ConfigParser()
     data_feed_config.read('/Users/leishang/helenstreet/python/tutorial/tutorial/spiders/datafeed-config.ini')
 
     # it needs to changed according to the product to be crawled.
-    current_section = 'zielonka_auto_geruchskiller'
+    current_section = 'nuk_zh'
+    brand_de = 'NUK'
+    brand_zh = ''
 
     @staticmethod
     def config_section_map(section):
         dict1 = {}
-        options = LiwusProductSpider.data_feed_config.options(section)
+        options = ZhLiwusProductSpider.data_feed_config.options(section)
         for option in options:
             try:
-                dict1[option] = LiwusProductSpider.data_feed_config.get(section, option)
+                dict1[option] = ZhLiwusProductSpider.data_feed_config.get(section, option)
                 if dict1[option] == -1:
                     print("skip: %s" % option)
             except:
@@ -42,46 +44,43 @@ class LiwusProductSpider(scrapy.Spider):
 
     def __init__(self, *a, **kw):
         print "***************** here ********************"
-        print LiwusProductSpider.data_feed_config.sections()
-        super(LiwusProductSpider, self).__init__(*a, **kw)
-        self.category = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['category']
-        self.export_file_name = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['export_file_name']
-        self.image_folder_prefix = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['image_folder_prefix']
-        self.brand_name = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['brand_name']
-        self.attribute_set = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['attribute_set']
-        self.product_short_description = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['product_short_description']
-        self.product_description_images = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['product_description_images']
-        tmp = LiwusProductSpider.config_section_map(LiwusProductSpider.current_section)['start_urls']
+        print ZhLiwusProductSpider.data_feed_config.sections()
+        super(ZhLiwusProductSpider, self).__init__(*a, **kw)
+        self.category = ZhLiwusProductSpider.config_section_map(ZhLiwusProductSpider.current_section)['category']
+        self.export_file_name = ZhLiwusProductSpider.config_section_map(ZhLiwusProductSpider.current_section)['export_file_name']
+        self.image_folder_prefix = ZhLiwusProductSpider.config_section_map(ZhLiwusProductSpider.current_section)['image_folder_prefix']
+        self.brand_name = ZhLiwusProductSpider.config_section_map(ZhLiwusProductSpider.current_section)['brand_name']
+        self.attribute_set = ZhLiwusProductSpider.config_section_map(ZhLiwusProductSpider.current_section)['attribute_set']
+        self.product_short_description = ZhLiwusProductSpider.config_section_map(ZhLiwusProductSpider.current_section)['product_short_description']
+        self.product_description_images = ZhLiwusProductSpider.config_section_map(ZhLiwusProductSpider.current_section)['product_description_images']
+        tmp = ZhLiwusProductSpider.config_section_map(ZhLiwusProductSpider.current_section)['start_urls']
         self.start_urls = tmp.split(",")
         print self.start_urls
         product_csv_file = open(self.export_file_name, 'wt')
-        LiwusProductSpider.writer = csv.writer(product_csv_file)
+        ZhLiwusProductSpider.writer = csv.writer(product_csv_file)
 
 
     #start_urls = ["http://www.liwus.de/suitcases-and-luggage.html"]
-
-    BESTECK_PATTERN = "(.)*(besteck|eierbecher)(.)*"
-    KITCHEN_HELPER_PATTERN = "(.)*(backpinsel|offner|knoblauchpresse|kuchenhelfer|messerscharfer|watzstahl|lo(e)*ffel|besen|schaufel|teigverteiler|dunsteinsatz)(.)*"
-    KITCHEN_HELPER_PATTERN_2 = "(.)*(pinzette-abgewinkelt-mattiert|schaler|teigschaber|wender|topfuntersetzer|multitool-clever|zange|pflegemittel)(.)*"
-    KITCHEN_HELPER_PATTERN_3 = "(.)*(reparaturstein|pizza-steakm-set|schleifhilfe|schubladeneinsatz|wetzstahl|bbq-set|schneider|ausstecher|bruhsieb|thermometer" \
-                               "|eierkocher|gelocht|einsatzsteg|eisportionierer|entschupper|hammer|heber|reibe|kartoffelstampfer|knacker|ruhrblitz|" \
-                               "salat-set|salat-dressing|streuer|schleifstein|universalformer|muhle)(.)*"
-    KITCHEN_ORGANIZER_PATTERN = "(.)*(tool-box-bambus|dose)(.)*"
-    KITCHEN_BLATTER_PATTERN = "(.)*(brett|platillo-magnetis)(.)*"
-    KITCHEN_PAN_PATTERN = "(.)*(pfanne-|topf-|dampf|raucherset-|wok-|sicomatic|stielkasserolle|vitalis|cocotte)(.)*"
-    KITCHEN_PAN_SET_PATTERN = '(.)*((pfannen|koch|topf|asia|kochgeschirr|cocotte)(.)*set-|touristen-set-13tlg--zwilling)(.)*'
-    KITCHEN_KNIFE_PATTERN = '(.)*(messer-|classic-ikon-2tlg|kitchensurfer|santoku)(.)*'
-    KITCHEN_KNIFE_SET_PATTERN = '(.)*(block|style-2tlg--zwilling_32433-001-0|messersatz|gourmet-2tlg|knife-set|messerset|yanagiba-geschenkset)(.)*'
-    KITCHEN_SCISSOR_PATTERN = '(.)*schere(.)*'
-    KITCHEN_COOK_POT = '(.)*(kessel|glas|karaffe|tasse|becher|auflaufform|kanne|schussel|schale|teller)(.)*'
-    MANICURE = '(.)*((nagelpflege|gurtel|leder)etui|gurteltasche|nagelknipser)(.)*'
-    BAR_WEIN = '(.)*(bar|loft|shaker|flachmann|korkenzieher|clip-weinthermometer|topfring|flaschenverschlus|weinpumpe)(.)*'
-    KAFFE = '(.)*(latte-macchiato)(.)*'
+    BESTECK_PATTERN = "(.)*((餐具(.)*件套)|糖罐|调料罐|盐罐套装)(.)*"
+    KITCHEN_HELPER_PATTERN = "(.)*((蒸笼)|((油|烧烤)刷)|((漏|炒菜|翻|翻炒)勺)|((压蒜|开罐|削皮|搅拌|去核|土豆泥|刨丝|打蛋)器)|面捞|水壶|锅铲|锅垫|配件|磨刀|核桃夹|切蛋)(.)*"
+    KITCHEN_HELPER_PATTERN_2 = "(.)*(pinzette-abgewinkelt-mattiert|schal|teigschaber|wender|topfuntersetzer|multitool-clever|schraubdeckelzange)(.)*"
+    KITCHEN_HELPER_PATTERN_3 = "(.)*(reparaturstein|pizza-steakm-set|schleifhilfe|schubladeneinsatz|wetzstahl|bbq-set)(.)*"
+    KITCHEN_ORGANIZER_PATTERN = "(.)*(厨房置物架)(.)*"
+    KITCHEN_BLATTER_PATTERN = "(.)*((砧|案|刀)板)(.)*"
+    KITCHEN_PAN_PATTERN = "(.)*(奶|煎|炖|汤|高压|平底|炖肉|蒸)锅(.)*[^件套]*"
+    KITCHEN_PAN_SET_PATTERN = "(.)*(奶|煎|炖|汤|高压|平底|炖肉|蒸)锅(.)*件套(.)*"
+    KITCHEN_KNIFE_PATTERN = "[^(刮|军)]*刀[^(套装|件套|石|器|叉)]"
+    KITCHEN_KNIFE_SET_PATTERN = "(.)*(刀[^叉]*(套装|件套))(.)*"
+    KITCHEN_SCISSOR_PATTERN = "(.)*(剪(.)*)(.)*"
+    KITCHEN_COOK_POT = "(.)*(kessel|glas|karaffe|tasse|becher|auflaufform|kanne|schussel|schale|teller|烤盘|水杯|杯子|烧水壶)(.)*"
+    MANICURE = "(.)*(眉毛|美甲)(.)*"
+    BAR_WEIN = "(.)*(启瓶器|开瓶器|bar|loft|shaker|flachmann|korkenzieher|clip-weinthermometer|topfring|flaschenverschlus|weinpumpe)(.)*"
+    KAFFE = "(.)*(latte-macchiato|咖啡杯|茶壶)(.)*"
+    SWISS = "(.)*((瑞士)军刀)(.)*"
+    TABLE_WARE = "(.)*(糖罐|调料罐|盐罐套装|汤勺|拌色拉碗|奶油刮刀|面包刀|儿童煮蛋器|取食勺|餐盘|小吃碗|汤碗|盏|勺|果酱罐|胡椒罐|盐罐)(.)*"
 
     product_category = {BESTECK_PATTERN : '[Chinese Category]/厨房用具/餐具器皿',
                         KITCHEN_HELPER_PATTERN: '[Chinese Category]/厨房用具/厨房小工具',
-                        KITCHEN_HELPER_PATTERN_2: '[Chinese Category]/厨房用具/厨房小工具',
-                        KITCHEN_HELPER_PATTERN_3: '[Chinese Category]/厨房用具/厨房小工具',
                         KITCHEN_ORGANIZER_PATTERN: '[Chinese Category]/厨房用具/厨房收纳',
                         KITCHEN_BLATTER_PATTERN:'[Chinese Category]/厨房用具/砧板',
                         KITCHEN_PAN_SET_PATTERN:'[Chinese Category]/厨房用具/德国锅具/德国锅具套装',
@@ -92,7 +91,9 @@ class LiwusProductSpider(scrapy.Spider):
                         KITCHEN_COOK_POT:'[Chinese Category]/厨房用具/杯壺烘焙',
                         MANICURE:'[Chinese Category]/美妆护肤/美妆工具',
                         BAR_WEIN:'[Chinese Category]/厨房用具/红酒器皿',
-                        KAFFE:'[Chinese Category]/厨房用具/咖啡器皿'}
+                        KAFFE:'[Chinese Category]/厨房用具/咖啡器皿',
+                        SWISS:'[Chinese Category]/休闲旅游/瑞士军刀',
+                        TABLE_WARE: '[Chinese Category]/厨房用具/餐桌用具'}
 
     STORE= 'base'
     AGE= ''
@@ -178,8 +179,8 @@ class LiwusProductSpider(scrapy.Spider):
             product_title = self.process_product_title(product_title_holder)
 
         if len(product_images) > 0 and len(product_images[0].strip()) > 0:
-            self.image_title = self.generate_image_name(product_title, product_images)
-            self.category = self.get_category_name(self.image_title)
+            self.image_title = self.generate_image_name(product_images)
+            self.category = self.get_category_name(product_title)
 
         liwus_item = LiwusItem()
 
@@ -189,7 +190,10 @@ class LiwusProductSpider(scrapy.Spider):
         liwus_item['category']= self.category
 
         if len(prod_description_holder) > 0:
+            print 'description is: %s' % prod_description_holder[0]
             liwus_item['description']= prod_description_holder[0] + self.product_description_images
+        else:
+            print 'sku %s description is null' % prod_sku_holder[0]
 
         liwus_item['img']= self.image_folder_prefix + self.image_title
         liwus_item['meta_title']= self.meta_title
@@ -244,31 +248,16 @@ class LiwusProductSpider(scrapy.Spider):
         # product_title = product_title.replace('/', '-')
         # product_title = product_title.lower()
 
-        print "original product title: " + product_title_holder[0]
-        tmp = re.sub('((\s)*,(\s)*)', '-', product_title_holder[0])
-        print "all comma replaced, it becomes: " + tmp
-        tmp = re.sub('((\s)+)', '-', tmp)
-        print "all space replaced, it becomes: " + tmp
-        tmp = tmp.replace("/", "-")
-        tmp = tmp.replace(".", "-")
-        tmp = tmp.replace("+", "-")
-        print "all forward / replaced, it becomes: " + tmp
-        tmp = re.sub('((-)+)', '-', tmp)
-        print "multiple - - - replaced, it becomes: " + tmp
-        # replace german umlaut
-        tmp = tmp.replace('ä', 'a')
-        tmp = tmp.replace('Ä', 'a')
-        tmp = tmp.replace('ö', 'o')
-        tmp = tmp.replace('Ö', 'o')
-        tmp = tmp.replace('ü', 'u')
-        tmp = tmp.replace('Ü', 'u')
-        tmp = tmp.replace('ß', 'ss')
+        prod_title = product_title_holder[0].strip()
+        #print "original product title: " + prod_title
+        if ZhLiwusProductSpider.brand_de.lower() not in prod_title.lower():
+            prod_title = ZhLiwusProductSpider.brand_de + ' ' + prod_title
+        if ZhLiwusProductSpider.brand_zh.lower() not in prod_title.lower():
+            prod_title = ZhLiwusProductSpider.brand_zh + ' ' + prod_title
+        #print 'now is: ' + prod_title
+        return prod_title
 
-        print "umlaut replaced, it becomes: " + tmp
-
-        return tmp
-
-    def generate_image_name(self, image_title, product_images):
+    def generate_image_name(self, product_images):
         # product_images[0] is like http://www.liwus.de/media/catalog/product/cache/1/
         # image/9df78eab33525d08d6e5fb8d27136e95/N/U/NUK_10176092.jpg
         prod_image_tmp = product_images[0].split('/')
@@ -277,26 +266,27 @@ class LiwusProductSpider(scrapy.Spider):
         image_name = prod_image_tmp[-1]
 
         # remove the suffix, we need only the name without the suffix .jpg
-        image_name_tmp = image_name.split(".")
-        image_name = image_name_tmp[0]
+        #image_name_tmp = image_name.split(".")
+        #image_name = image_name_tmp[0]
 
         # image name is equal to <product title>-<image name>
-        image_title = image_title + '-' + image_name + '.jpg'
-        image_title = image_title.lower()
-        return image_title
+        #image_title = image_title + '-' + image_name + '.jpg'
+        #image_title = image_title.lower()
+        return image_name.lower()
 
-    def get_category_name(self, product_image_name):
+    def get_category_name(self, product_title_name):
         return self.category
         matched = 0
         for key, value in self.product_category.iteritems():
-            result = re.match(key, product_image_name)
+            print 'matching title %s against regex %s ' % (product_title_name, key)
+            result = re.match(key.decode('utf-8'), product_title_name.decode('utf-8'))
             if result is None:
                 continue
             matched += 1
-            print product_image_name + " matches " + key + " and it's category is: " + value
+            print product_title_name + " matches " + key + " and it's category is: " + value
             return value
         if matched == 0:
-            print "[no matches!]:" + product_image_name + " no matches!"
+            print "[no matches!]:" + product_title_name + " no matches!"
             return self.category
         # elif matched > 1:
         #     print "***" + product_image_name + " is matched %d times.***" % matched
@@ -312,15 +302,15 @@ class LiwusProductSpider(scrapy.Spider):
 
         try:
             if len(self.outputted_products) == 0:
-                print "output header fields into file"
-                self.writer.writerow(('sku', '_store', '_attribute_set','_type','categories','_product_websites','age_range','aptamil_code','bottle_volume',
+                print "output header fields into file, remove image, small_image, thumnail"
+                self.writer.writerow(('sku', '_store', '_attribute_set','_type','categories','name','_product_websites','age_range','aptamil_code','bottle_volume',
                              'brand','carseat_color','cartoon_figures','color','cost','country_of_manufacture','created_at','custom_design',
                              'custom_design_from','custom_design_to','custom_layout_update','description','featured','gallery',
-                             'gift_message_available','has_options','image','image_label','manufacturer','material','media_gallery',
+                             'gift_message_available','has_options','image_label','manufacturer','material','media_gallery',
                              'meta_description','meta_keyword','meta_title','minimal_price','msrp','msrp_display_actual_price_type',
-                             'msrp_enabled','name','news_from_date','news_to_date','options_container','page_layout','price',
-                             'required_options','short_description','sigg_figure','size','small_image','small_image_label','special_from_date',
-                             'special_price','special_to_date','status','tax_class_id','thumbnail','thumbnail_label','updated_at','url_key',
+                             'msrp_enabled','news_from_date','news_to_date','options_container','page_layout','price',
+                             'required_options','short_description','sigg_figure','size','small_image_label','special_from_date',
+                             'special_price','special_to_date','status','tax_class_id','thumbnail_label','updated_at','url_key',
                              'url_path','visibility','weight','qty','min_qty','use_config_min_qty','is_qty_decimal','backorders',
                              'use_config_backorders','min_sale_qty','use_config_min_sale_qty','max_sale_qty','use_config_max_sale_qty',
                              'is_in_stock','notify_stock_qty','use_config_notify_stock_qty','manage_stock','use_config_manage_stock',
@@ -331,14 +321,14 @@ class LiwusProductSpider(scrapy.Spider):
                              '_tier_price_price','_group_price_website','_group_price_customer_group','_group_price_price','_media_attribute_id',
                              '_media_image','_media_lable','_media_position','_media_is_disabled'))
 
-            self.writer.writerow((item['sku'], self.STORE, item['attribute_set'], self.PRODUCT_TYPE, item['category'], self.PRODUCT_WEBSITES, item['age'], '', '',
+            self.writer.writerow((item['sku'], self.STORE, item['attribute_set'], self.PRODUCT_TYPE, item['category'], item['name'], self.PRODUCT_WEBSITES, item['age'], '', '',
                                   item['brand'], '', '', '', '', self.COUNTRY_OF_MANU, '', '',
                                   '', '', '', item['description'], self.FEATURED, '',
-                                  '', '0', item['img'], self.image_label, '', '', self.MEDIA_GALLERY,
+                                  '', '0', self.image_label, '', '', self.MEDIA_GALLERY,
                                   item['meta_description'], item['meta_keywords'], item['meta_title'], '', '', self.USE_CONFIG,
-                                  self.USE_CONFIG, item['name'], '', '', self.PRODUCT_INFO_COLUMN, '', item["price"],
-                                  '0', item['short_description'], '', self.SIZE, item['img'], self.small_image_label, '',
-                                  self.SPECIAL_PRICE, '', self.STATUS, self.TAX_CLASS_ID, item['img'], self.thumbnail_label, '', item['url_key'],
+                                  self.USE_CONFIG, '', '', self.PRODUCT_INFO_COLUMN, '', item["price"],
+                                  '0', item['short_description'], '', self.SIZE, self.small_image_label, '',
+                                  self.SPECIAL_PRICE, '', self.STATUS, self.TAX_CLASS_ID, self.thumbnail_label, '', item['url_key'],
                                   item['url_key'] +'.html', self.VISIBILITY, self.WEIGHT, self.QUANTITY, '0', '1', '0', '0',
                                   '1', '1', '1', '0', '1',
                                   self.IS_IN_STOCK, '', '1', '0', '1',

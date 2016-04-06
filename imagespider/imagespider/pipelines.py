@@ -27,4 +27,4 @@ class LiwusImagesPipeline(ImagesPipeline):
             yield key, image, buf
 
     def change_filename(self, key, response):
-        return "full/%s.jpg" % response.meta['title']
+        return "full/%s" % response.meta['title']
