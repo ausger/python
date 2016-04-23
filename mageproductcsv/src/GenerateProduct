@@ -9,14 +9,14 @@ _author_ = 'leoshang'
 
 class GenerateProduct:
 
-    XLS_INPUT_FILE_NAME = "/Users/leishang/helenstreet/python/mageproductcsv/resources/wmf-milk-foam.xlsx"
+    XLS_INPUT_FILE_NAME = "/Users/leishang/helenstreet/python/mageproductcsv/resources/wmf-sandwich-baker.xlsx"
     XLS_SHEET_NAME = "Sheet1"
-    CSV_OUTPUT_FILE_NAME = "/Users/leishang/helenstreet/python/mageproductcsv/output/wmf-milk-foam_complete.csv"
+    CSV_OUTPUT_FILE_NAME = "/Users/leishang/helenstreet/python/mageproductcsv/output/wmf-sandwich-baker_complete.csv"
     store='base'
     age=''
     brand = "WMF"
     attribute_set='Electric'
-    categories='[Chinese Category]/家用小电器/奶泡机'
+    categories='[Chinese Category]/家用小电器/多士炉'
     country_of_manu='Germany'
     featured='No'
     UTF_8_ENCODING='utf-8'
@@ -72,17 +72,22 @@ class GenerateProduct:
             a = []
             # check out the last row
             for index, cell in enumerate(row):
-                if cell.value is not None:
-                    print index
-                    if isinstance(cell.value, float):
-                        print cell.value
-                        a.append(cell.value)
-                    else:
-                        print u''.join(cell.value).encode('utf-8').strip()
-                        a.append(u''.join(cell.value).encode('utf-8').strip())
+                if cell.value is None:
+                    cell.value = 0
+                print index
+                #if isinstance(cell.value, float):
+                if index == 2:
+                    print cell.value
+                    a.append(cell.value)
+                else:
+                    print u''.join(cell.value).encode('utf-8').strip()
+                    a.append(u''.join(cell.value).encode('utf-8').strip())
                     #   0           1         2       3         4            5                 6                  7                 8        9    10     11   12
                     #category	description	price	name	meta_title	meta_keywords	meta_description	short_description	img-cover	img	brand	sku	url-key
-            description_tmp = a[1] + a[9]
+            if '<img />' != a[9]:
+                description_tmp = a[1] + a[9]
+            else:
+                description_tmp = a[1]
             writer.writerow((a[11], self.store, self.attribute_set, self.product_type, self.categories, self.product_websites, self.age,'','',
                         a[10],'','','','',self.country_of_manu,'','',
                         '','','',description_tmp,self.featured,'',

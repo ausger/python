@@ -20,11 +20,11 @@ class ZhLiwusProductSpider(scrapy.Spider):
     name = "zh-liwus-product"
     allowed_domains = ["www.liwus.de"]
     data_feed_config = ConfigParser.ConfigParser()
-    data_feed_config.read('/Users/leishang/helenstreet/python/tutorial/tutorial/spiders/datafeed-config.ini')
+    data_feed_config.read('/Users/leishang/helenstreet/python/tutorial/tutorial/spiders/zh-datafeed-config.ini')
 
     # it needs to changed according to the product to be crawled.
-    current_section = 'nuk_zh'
-    brand_de = 'NUK'
+    current_section = 'zielonka_auto_geruchskiller_zh'
+    brand_de = 'Zielonka'
     brand_zh = ''
 
     @staticmethod
