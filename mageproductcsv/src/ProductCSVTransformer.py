@@ -3,6 +3,8 @@
 # vi:ts=4:et
 import sys
 import csv
+import os
+import shutil
 import re
 import ConfigParser
 from collections import defaultdict
@@ -58,6 +60,8 @@ class ProductCSVTransformer:
         self.TAX_CLASS = self.config_section_map('InputParameter')['TAX_CLASS'.lower()]
         self.CSV_INPUT_FILE_NAME = self.config_section_map('InputParameter')['CSV_INPUT_FILE_NAME'.lower()]
         self.CSV_OUTPUT_FILE_NAME = self.config_section_map('InputParameter')['CSV_OUTPUT_FILE_NAME'.lower()]
+        self.IMAGE_SOURCE_FOLDER = self.config_section_map('ConstantParameter')['IMAGE_SOURCE_FOLDER'.lower()]
+        self.IMAGE_TARGET_FOLDER = self.config_section_map('ConstantParameter')['IMAGE_TARGET_FOLDER'.lower()]
         self.SKU_COLUMN = self.config_section_map('ColumnOfInterest')['SKU_COLUMN'.lower()]
         self.NAME_COLUMN = self.config_section_map('ColumnOfInterest')['NAME_COLUMN'.lower()]
         self.IMAGE_COLUMN = self.config_section_map('ColumnOfInterest')['IMAGE_COLUMN'.lower()]
@@ -71,12 +75,14 @@ class ProductCSVTransformer:
         self.SKIP_PRODUCT_NAME = self.config_section_map('SkipProductNamePattern')['SKIP_PRODUCT_NAME'.lower()]
         self.OUTPUT_HEADER = self.config_section_map('Csv_Header')['OUTPUT_HEADER'.lower()]
         self.ROW_RANGE = self.config_section_map('InputParameter')['ROW_RANGE'.lower()]
+        self.columns = defaultdict(list)
         self.name_var = ''
         self.meta_title_var = ''
         self.meta_description_var = ''
         self.image_var = ''
         self.small_image_var = ''
         self.thumbnail_var = ''
+        self.brand_var = ''
         self.url_key_var = ''
         self.url_path_var = ''
         self.image_label_var = ''
@@ -112,7 +118,7 @@ class ProductCSVTransformer:
             return last_row
 
     def output(self):
-        columns = defaultdict(list)
+
         outputfile = file(self.CSV_OUTPUT_FILE_NAME, 'w')
         header = self.OUTPUT_HEADER.split(',')
         skupattern = re.compile(self.SKIP_PRODUCT_NAME)
@@ -182,9 +188,32 @@ class ProductCSVTransformer:
                         exit(2)
 
                 for(k, v) in row.items():
-                    if v not in columns[k]:
-                        columns[k].append(v)
-        print('sku have been processed ' + str(columns['sku']))
+                    if v not in self.columns[k]:
+                        if k != 'media_gallery':
+                            self.columns[k].append(v)
+        print('sku have been processed ' + str(self.columns['sku']))
+        print('media_gallery column: ' + str(self.columns['media_gallery']))
+        print 'copy images ...'
+        self.copyMediaGallery()
+
+    def copyMediaGallery(self):
+        for image_cell in self.columns['media_gallery']:
+            print 'image cell ' + image_cell
+            images = image_cell.split(';')
+            for image_short_name in images:
+                print 'image name ' + image_short_name
+                src_image = self.IMAGE_SOURCE_FOLDER + image_short_name
+                tgt_image = self.IMAGE_TARGET_FOLDER + image_short_name
+                # create the target path
+                if not os.path.exists(os.path.dirname(tgt_image)):
+                    print 'creating path ' + tgt_image
+                    try:
+                        os.makedirs(os.path.dirname(tgt_image))
+                    except OSError as exc:
+                        print exc.message
+                # do copy
+                print 'copy from ' + src_image + ' to ' + tgt_image
+                shutil.copy(src_image, tgt_image)
 
     def build_product_row(self, current_sku, media_gallery_var, output_product_row):
             output_product_row.append('default')
@@ -219,7 +248,11 @@ class ProductCSVTransformer:
             output_product_row.append(self.is_in_stock_var)
             output_product_row.append(self.manage_stock_var)
             output_product_row.append(media_gallery_var)
-            output_product_row.append(self.BRAND)
+            self.columns['media_gallery'].append(media_gallery_var)
+            if self.brand_var:
+                output_product_row.append(self.brand_var)
+            else:
+                output_product_row.append(self.BRAND)
             output_product_row.append(self.age_range_var)
             output_product_row.append(self.bottle_volume_var)
             output_product_row.append(self.featured_var)
@@ -268,6 +301,7 @@ class ProductCSVTransformer:
         self.image_var = row['image']
         self.small_image_var = row['small_image']
         self.thumbnail_var = row['thumbnail']
+        self.brand_var = row['brand']
         self.url_key_var = row['url_key']
         self.url_path_var = row['url_path']
         self.image_label_var = row['image_label']
@@ -296,4 +330,3 @@ class ProductCSVTransformer:
 
 t = ProductCSVTransformer()
 t.output()
-t.getlastrow()
