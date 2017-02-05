@@ -96,7 +96,6 @@ class ProductCSVTransformer:
         self.description_var = ''
         self.short_description_var = ''
         self.meta_keyword_var = ''
-        self.special_from_date_var = ''
         self.qty_var = ''
         self.is_in_stock_var = ''
         self.manage_stock_var = ''
@@ -105,9 +104,10 @@ class ProductCSVTransformer:
         self.bottle_volume_var = ''
         self.featured_var = ''
         self.aptamil_code_var = ''
-        self.special_price_var = ''
         self.size_var = ''
         self.free_shipping_var = ''
+        self.use_config_min_sale_qty = 1
+        self.min_sale_qty = 1
 
     def getlastrow(self):
         with open(self.CSV_INPUT_FILE_NAME, 'r') as f:
@@ -239,11 +239,12 @@ class ProductCSVTransformer:
             output_product_row.append(self.TAX_CLASS)
             output_product_row.append(self.color_var)
             output_product_row.append(self.price_var)
+            output_product_row.append(self.min_sale_qty)
+            output_product_row.append(self.use_config_min_sale_qty)
             output_product_row.append(self.weight_var)
             output_product_row.append(self.description_var)
             output_product_row.append(self.short_description_var)
             output_product_row.append(self.meta_keyword_var)
-            output_product_row.append(self.special_from_date_var)
             output_product_row.append(self.qty_var)
             output_product_row.append(self.is_in_stock_var)
             output_product_row.append(self.manage_stock_var)
@@ -257,7 +258,6 @@ class ProductCSVTransformer:
             output_product_row.append(self.bottle_volume_var)
             output_product_row.append(self.featured_var)
             output_product_row.append(self.aptamil_code_var)
-            output_product_row.append(self.special_price_var)
             output_product_row.append(self.size_var)
             output_product_row.append(self.DELIVERY_TIME)
             output_product_row.append(self.free_shipping_var)
@@ -282,7 +282,6 @@ class ProductCSVTransformer:
         self.description_var = ''
         self.short_description_var = ''
         self.meta_keyword_var = ''
-        self.special_from_date_var = ''
         self.qty_var = ''
         self.is_in_stock_var = ''
         self.manage_stock_var = ''
@@ -290,7 +289,6 @@ class ProductCSVTransformer:
         self.bottle_volume_var = ''
         self.featured_var = ''
         self.aptamil_code_var = ''
-        self.special_price_var = ''
         self.size_var = ''
         self.free_shipping_var = ''
 
@@ -315,7 +313,6 @@ class ProductCSVTransformer:
         self.description_var = row['description']
         self.short_description_var = row['short_description']
         self.meta_keyword_var = row['meta_keyword']
-        self.special_from_date_var = row['special_from_date']
         self.qty_var = row['qty']
         self.is_in_stock_var = row['is_in_stock']
         self.manage_stock_var = row['manage_stock']
@@ -323,7 +320,6 @@ class ProductCSVTransformer:
         self.bottle_volume_var = row['bottle_volume']
         self.featured_var = row['featured']
         self.aptamil_code_var = row['aptamil_code']
-        self.special_price_var = row['special_price']
         self.size_var = row['size']
         self.free_shipping_var = row['free_shipping']
 

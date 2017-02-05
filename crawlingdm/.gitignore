@@ -1,0 +1,5 @@
+output/
+*.xlsx
+.csv
+.idea
+*.pvc
