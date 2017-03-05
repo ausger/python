@@ -21,10 +21,10 @@ class EkImageDownloader(ImagesPipeline):
     # add this information to Requests() for individual images downloads
     # through "meta" dict
 
-    # image_url = 'thumbnail_url'
-    # image_name = 'thumbnail'
-    image_url = 'image_url'
-    image_name = 'image'
+    image_url = 'thumbnail_url'
+    image_name = 'thumbnail'
+    #image_url = 'image_url'
+    #image_name = 'image'
 
     def get_media_requests(self, item, info):
         return [Request(item.get(self.image_url), meta={'title': item[self.image_name]})]
@@ -86,7 +86,7 @@ class EkXslxExportPipeline(object):
         self.worksheet.write(self.row_count, 5, item['top_price'])
         self.worksheet.write(self.row_count, 6, item['vk_price'])
         # self.worksheet.write(self.row_count, 7, item['short_description'])
-        self.worksheet.insert_image(self.row_count, 7, spider.IMAGE_FOLDER + item['thumbnail'],
+        self.worksheet.insert_image(self.row_count, 7, spider.image_folder + item['thumbnail'],
                                     {'x_scale': spider.IMAGE_X_SCALE, 'y_scale': spider.IMAGE_Y_SCALE})
         self.row_count += 1
         return item
@@ -105,7 +105,7 @@ class EkCsvExportPipeline(object):
         return pipeline
 
     def spider_opened(self, spider):
-        file_name = spider.CATALOG_ID.lower() + '-' + spider.SEARCH_STRING.lower()
+        file_name = spider.CATALOG_ID.lower() + '-' + spider.search_keyword.lower()
         file = open('%s_products.csv' % file_name, 'w+b')
         self.files[spider] = file
         self.exporter = EkCsvItemExporter(file)

@@ -94,6 +94,7 @@ FIELDS_TO_EXPORT = [
     'brand',
     'age_range',
     'size',
+    'model',
     'color',
     'description',
     'short_description',

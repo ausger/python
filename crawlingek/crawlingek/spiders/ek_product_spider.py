@@ -2,8 +2,8 @@
 import scrapy
 import configparser
 import re
+import copy
 from crawlingek.items import EkItem
-from crawlingek.helper.stringtools import StringTools
 from lxml import etree
 import requests
 from io import StringIO
@@ -21,14 +21,10 @@ class EkProductCrawler(scrapy.Spider):
     LOGIN_URL = BASE_URL + '/ekcontent/control/landingpage'
     LOGOUT_URL = BASE_URL + '/ekcontent/control/logout'
     SEARCH_URL = BASE_URL + '/ekcontent/control/keywordsearch'
-    PAGE_NO = 3
+    PAGE_NO = 1
     SEARCH_RESULT_PAGING_URL = SEARCH_URL + "?VIEW_SIZE=32&VIEW_INDEX="
     # SEARCH_RESULT_PAGING = [SEARCH_URL + '?VIEW_SIZE=32&VIEW_INDEX=2', SEARCH_URL + '?VIEW_SIZE=32&VIEW_INDEX=3']
-    SEARCH_STRING = 'WMF'
     CATALOG_ID = 'EK_Gesamtkatalog'
-
-    # IMAGE_FOLDER = '/Users/leishang/helenstreet/python/crawlingek/output/image_download/'
-    IMAGE_FOLDER = 'E:/python/crawlingek/output/image_download/'
     IMAGE_CELL_HEIGHT = 150
     IMAGE_X_SCALE = 1
     IMAGE_Y_SCALE = 1
@@ -69,6 +65,8 @@ class EkProductCrawler(scrapy.Spider):
         self.featured = EkProductCrawler.config_section_map('DataField')['featured']
         self.delivery_time = EkProductCrawler.config_section_map('DataField')['delivery_time']
         self.free_shipping = EkProductCrawler.config_section_map('DataField')['free_shipping']
+        self.search_keyword = EkProductCrawler.config_section_map('General')['search_keyword']
+        self.image_folder = EkProductCrawler.config_section_map('General')['image_folder']
         # fields for csv export ends
         # generate paging url
         self.build_paging_urls()
@@ -87,16 +85,13 @@ class EkProductCrawler(scrapy.Spider):
     BRAND_PATH = ".//div[@class='productdescription']/div[@class='head2']"
     SHORT_DESCRIPTION_PATH = ".//div[@class='productdescription']"
 
-    NAME_PATH = ".//div[@class='producttable']/descendant::tr[contains(normalize-space(@id), 'tr')]/td[3]/text()"
-    EK_PRICE_PATH = ".//div[@class='producttable']/descendant::tr[contains(normalize-space(@id), 'tr')]/td[4]/text()"
-    TOP_PRICE_PATH = ".//div[@class='producttable']/descendant::tr[contains(normalize-space(@id), 'tr')]/" \
-                     "td[@class='price']/descendant::a"
-    EK_ARTICLE_PATH = ".//div[@class='producttable']/descendant::tr[contains(normalize-space(@id), 'tr')]" \
-                      "/td/table/tr/td/text()"
-    EK_PRODUCT_ID_PATH = ".//div[@class='producttable']/descendant::tr[contains(normalize-space(@id), 'tr')]" \
-                         "/td/descendant::form/descendant::input[@name='product_id']/@value"
-
-    VK_PRICE_PATH = ".//div[@class='producttable']/descendant::tr[contains(normalize-space(@id), 'tr')]/td[6]/text()"
+    MULTIPLE_SKUS = ".//div[@class='producttable']/descendant::tr[contains(normalize-space(@id), 'tr')]"
+    NAME_PATH = "./td[3]/text()"
+    EK_PRICE_PATH = "./td[4]/text()"
+    TOP_PRICE_PATH = "./td[@class='price']/descendant::a"
+    VK_PRICE_PATH = "./td[6]/text()"
+    EK_ARTICLE_PATH = "./td/table/tr/td/text()"
+    EK_PRODUCT_ID_PATH = "./td/descendant::form/descendant::input[@name='product_id']/@value"
 
     THUMB_IMG_URL = ".//div[@class='productimage']/descendant::img/@src"
     IMG_URL = ".//div[@class='productimage']/a/@href"
@@ -124,7 +119,7 @@ class EkProductCrawler(scrapy.Spider):
             # search product
             search_payload = {'CATALOG_ID': self.CATALOG_ID, 'CLEAR_SEARCH': 'Y', 'CAT_FACET': '',
                               'QUERY_TYPE': '',
-                              'SEARCH_STRING': self.SEARCH_STRING, 'SORT': '', 'x': '0', 'y': '0'}
+                              'SEARCH_STRING': self.search_keyword, 'SORT': '', 'x': '0', 'y': '0'}
             search_result = a_session.post(self.SEARCH_URL, search_payload)
             yield from self.handle_search_response(search_result)
             # paging using get, while search using post
@@ -149,22 +144,66 @@ class EkProductCrawler(scrapy.Spider):
         ek_item['index'] = index
         # SKU, BRAND, NAME, IMG_SRC, IMG_URL, THUMB_IMG_SRC, THUMB_IMG_URL,
         # DESCRIPTION, SHORT_DESCRIPTION, PRICE, DISCOUNT_PRICE
-        self.handle_brand(doc_element, ek_item)
-        self.handle_product_name(doc_element, ek_item)
-        self.handle_article_nr(doc_element, ek_item)
-        self.handle_product_id(doc_element, ek_item)
-        self.handle_sku(ek_item)
-        self.handle_images(doc_element, ek_item)
-        self.handle_price(doc_element, ek_item)
-        self.handle_short_desc(doc_element, ek_item)
-        self.handle_description(doc_element, ek_item)
 
-        # below handle extra fields for csv export
+        # handle common properties of a product
+        self.handle_brand(doc_element, ek_item)
+
+        # @TODO parse B, V mark, which indicates not available.
+
+        self.handle_short_desc(doc_element, ek_item)
+        self.handle_images(doc_element, ek_item)
         self.populate_static_data(ek_item)
-        self.handle_url_info(ek_item)
+
+        multiple_skus_holder = doc_element.xpath(self.MULTIPLE_SKUS)
+        if len(multiple_skus_holder) > 1:
+            print('its a product of [%d] sku' % len(multiple_skus_holder))
+            # below can be multiple SKUs for a single product
+            yield from self.handle_multiple_skus_product(ek_item, multiple_skus_holder)
+        else:
+            self.handle_singlesku_product(ek_item, multiple_skus_holder)
+        self.handle_description(doc_element, ek_item)
         self.handle_color(doc_element, ek_item)
         self.handle_weight(doc_element, ek_item)
+        # below handle extra fields for csv export
+        self.handle_url_info(ek_item)
         yield ek_item
+
+    def handle_multiple_skus_product(self, ek_item, multiple_skus_holder):
+        for idx, sku_holder in enumerate(multiple_skus_holder):
+            # replicate a new ek_item
+            a_sku_item = copy.deepcopy(ek_item)
+            a_sku_item['model'] = ''
+            a_sku_item['simples_skus'] = ''
+            self.handle_product_name(sku_holder, a_sku_item)
+            self.handle_article_nr(sku_holder, a_sku_item)
+            self.handle_product_id(sku_holder, a_sku_item)
+            self.handle_sku(a_sku_item)
+            self.handle_price(multiple_skus_holder[0], a_sku_item)
+            if idx == 0:
+                ek_item['model'] = a_sku_item['name']
+                ek_item['simples_skus'] = a_sku_item['sku']
+            else:
+                ek_item['model'] += ',' + a_sku_item['name']
+                ek_item['simples_skus'] += ',' + a_sku_item['sku']
+            self.handle_price(sku_holder, a_sku_item)
+            # below handle extra fields for csv export
+            self.handle_url_info(a_sku_item)
+            # 1 = Not Visible Individually, 2 = Catalog, 3 = Search, 4 = Catalog, Search
+            a_sku_item['visibility'] = 1
+            ek_item['price'] = a_sku_item['price']
+            yield a_sku_item
+        # name should be parsed from h3 of short description. Sku needs to be ...
+        ek_item['name'] = ek_item['log_id']
+        ek_item['sku'] = '-'.join(ek_item['simples_skus'].split(','))
+        ek_item['type'] = 'configurable'
+        ek_item['product_id'] = 'configurable_product_id'
+
+    def handle_singlesku_product(self, ek_item, multiple_skus_holder):
+        self.handle_product_name(multiple_skus_holder[0], ek_item)
+        self.handle_article_nr(multiple_skus_holder[0], ek_item)
+        self.handle_product_id(multiple_skus_holder[0], ek_item)
+        self.handle_sku(ek_item)
+        self.handle_price(multiple_skus_holder[0], ek_item)
 
     def handle_description(self, doc_element, ek_item):
         desc_part = self.DESCRIPTION_PATH_1 + ek_item['product_id'] + self.DESCRIPTION_PATH_2
@@ -174,7 +213,8 @@ class EkProductCrawler(scrapy.Spider):
             idx = description.find('</div>')
             r_idx = description.rfind('</div>')
             tmp = description[(idx + len('</div>')): r_idx]
-            ek_item['description'] = tmp
+            # &#13; is "\r"
+            ek_item['description'] = tmp.replace(r"&#13;\n", r"")
 
     def find_property_from_description_block(self, doc_element, ek_item, tag):
         desc_part = self.DESCRIPTION_PATH_1 + ek_item['product_id'] + self.DESCRIPTION_PATH_2
@@ -210,7 +250,8 @@ class EkProductCrawler(scrapy.Spider):
             second_div_index = short_desc.replace('</div>', 'XXXXXX', 1).find('</div>')
             last_div_index = short_desc.rfind('</div>')
             tmp = short_desc[second_div_index + len('</div>') : last_div_index]
-            ek_item['short_description'] = tmp
+            # &#13; is "\r"
+            ek_item['short_description'] = tmp.replace(r"&#13;\n", r"")
 
     # log_id and brand are located within the same div.
     # log_id can be found from the tag h3, but brand is sometimes wrapped with h2 and sometimes with h3.
@@ -244,6 +285,7 @@ class EkProductCrawler(scrapy.Spider):
             else:
                 print('cannot find the %s of the product %s' % (key, ek_item['log_id']))
         ek_item['small_image'] = ek_item['image']
+        ek_item['media_gallery'] = ek_item['image'] + ";" + ek_item['small_image'] + ";" + ek_item['thumbnail']
 
     def handle_price(self, doc_element, ek_item):
         ek_price_holder = doc_element.xpath(self.EK_PRICE_PATH)
@@ -263,6 +305,7 @@ class EkProductCrawler(scrapy.Spider):
             else:
                 ek_item[key] = '---'
                 print('cannot find the %s of the product %s' % (key, ek_item['log_id']))
+        ek_item['price'] = ek_item['vk_price']
 
     def handle_product_id(self, doc_element, ek_item):
         product_id_holder = doc_element.xpath(self.EK_PRODUCT_ID_PATH)

@@ -28,6 +28,8 @@ class EkItem(scrapy.Item):
     small_image_url = scrapy.Field()
     thumbnail = scrapy.Field()
     thumbnail_url = scrapy.Field()
+    simples_skus = scrapy.Field()
+    model = scrapy.Field()
     # image_label = scrapy.Field()
     description = scrapy.Field()
     short_description = scrapy.Field()
